@@ -64,3 +64,33 @@ A character written between single quotes represents an integer value equal to t
 value of the character in the machine's character set. This is called a character constant,
 although it is just another way to write a small integer. 
 
+En su CORE, C no tiene valores booleanos.
+
+By definition, chars are just small integers, so char variables and constants are identical to
+ints in arithmetic expressions. 
+
+You may have noticed that there is a return statement at the end of main. Since main is a
+function like any other, it may return a value to its caller, which is in effect the environment in
+which the program was executed. Typically, a return value of zero implies normal
+termination; non-zero values signal unusual or erroneous termination conditions.
+
+This declaration, which is called a function prototype, has to agree with the definition
+and uses of power. It is an error if the definition of a function or any uses of it do not agree
+with its prototype.
+
+Los valores en C se pasan por valor excepto los arrays:
+The story is different for arrays. When the name of an array is used as an argument, the value
+passed to the function is the location or address of the beginning of the array - there is no
+copying of array elements. By subscripting this value, the function can access and alter any
+argument of the array. This is the topic of the next section.
+
+An external variable must be defined, exactly once, outside of any function; this sets aside
+storage for it. The variable must also be declared in each function that wants to access it; this
+states the type of the variable. The declaration may be an explicit extern statement or may be
+implicit from context.
+
+You should note that we are using the words definition and declaration carefully when we
+refer to external variables in this section.**Definition** refers to the place where the variable is
+created or assigned storage; **declaration** refers to places where the nature of the variable is
+stated but no storage is allocated.
+
