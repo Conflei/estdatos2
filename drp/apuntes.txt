@@ -1,0 +1,18 @@
+Lenguaje C
+
+http://cprogramminglanguage.net/avl-tree.aspx
+
+link para rxvt
+
+C:\cygwin\bin\rxvt.exe -display :0 -fn "Lucida Console-14" -tn rxvt-cygwin-native -fg white -bg black -e /bin/bash --login
+
+
+para copiar la configuracion de vim 
+
+cp /usr/share/vim/vim73/vimrc_example.vim ~/.vimrc
+
+
+codigo joyanes
+
+http://novella.mhhe.com/sites/844814077x/student_view0/codigo_fuente_en_c__apartados.html
+

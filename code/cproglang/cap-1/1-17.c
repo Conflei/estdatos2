@@ -9,7 +9,6 @@ main () {
       max;
 
   char line[MAXLINE];
-
   max = 79;
 
   while ( (len = getlinea(line, MAXLINE)) > 0 ) {
@@ -23,8 +22,8 @@ main () {
 
 // lee una linea y retorna el largo
 int getlinea(char s[], int lim) {
-  int c;
-  int i;
+  int c,
+      i;
 
   for (i = 0; i < lim-1 && (c = getchar()) != EOF && c != '\n'; ++i) {
     s[i] = c;
