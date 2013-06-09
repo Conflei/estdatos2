@@ -7,6 +7,8 @@ int getId();
 //struct persona* setPersona(struct persona* siguiente);
 void setPersona();
 void clearBuffer();
+void imprimirLista();
+void contarNodos();
 
 struct persona {
   int id;
@@ -14,15 +16,16 @@ struct persona {
   struct persona *siguiente;
 };
 
+struct persona *raiz;
 struct persona *nodoTemp;
 
 main() {
-
   return menu();
 }
 
 int menu() {
   char c;
+  raiz = (struct persona*) malloc(sizeof(struct persona));
   nodoTemp = (struct persona*) malloc(sizeof(struct persona));
 
   do {
@@ -33,7 +36,10 @@ int menu() {
         setPersona();
         break;
       case '2':
-        printf("dos");
+        imprimirLista();
+        break;
+      case '3':
+        contarNodos();
         break;
       default:
         break;
@@ -83,11 +89,43 @@ void setPersona() {
 
   printf("id:\t%d\n", actual->id);
   printf("nom:\t%s\n", actual->nombre);
-  printf("dir:\t%p\n", actual);
-  printf("sig:\t%p\n", actual->siguiente);
-  printf("ndtmp:\t%p\n", nodoTemp);
-  nodoTemp->siguiente = actual; 
+  //printf("dir:\t%p\n", actual);
+  if (raiz->siguiente == 0) {
+    raiz->siguiente = actual;
+  } else {
+    nodoTemp->siguiente = actual; 
+  }
+  //printf("tmp:\t%p\n", nodoTemp);
+  //printf("r0t:\t%p\n", raiz->siguiente);
   nodoTemp = actual;
+}
+
+void imprimirLista() {
+  struct persona *temporal;
+  temporal = raiz->siguiente;
+
+  printf("imprimiendo lista \n");
+  
+  while(temporal) {
+    printf("id:\t%d\n", temporal->id);
+    printf("nom:\t%s\n", temporal->nombre);
+    temporal = temporal->siguiente;
+  }
+   
+}
+
+void contarNodos() {
+  struct persona *temporal;
+  temporal = raiz->siguiente;
+  int i = 0;
+
+  while(temporal) {
+    i++;
+    temporal = temporal->siguiente;
+  }
+  
+  printf("Total: %d nodos", i); 
+
 }
 
 // http://cboard.cprogramming.com/c-programming/92513-cin-ignore-c.html
