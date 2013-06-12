@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int menu();
 char* storeArr();
 int getId();
-//struct persona* setPersona(struct persona* siguiente);
-void setPersona();
+int menu();
 void clearBuffer();
-void imprimirLista();
 void contarNodos();
+void imprimirLista();
+void setPersona();
 
 struct persona {
   int id;
@@ -45,10 +44,10 @@ int menu() {
         break;
     }
   } while(c != 'q' && c != EOF);
-
 }
 
 // retorna un int, >= 0 && < 10
+// TODO: que traiga mas de un digito
 int getId() {
   char c;
   int id = 0;
@@ -87,8 +86,8 @@ void setPersona() {
   actual->nombre = storeArr();
   actual->id = getId();
 
-  printf("id:\t%d\n", actual->id);
-  printf("nom:\t%s\n", actual->nombre);
+  //printf("id:\t%d\n", actual->id);
+  //printf("nom:\t%s\n", actual->nombre);
   //printf("dir:\t%p\n", actual);
   if (raiz->siguiente == 0) {
     raiz->siguiente = actual;
