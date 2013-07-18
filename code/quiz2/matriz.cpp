@@ -18,7 +18,6 @@ int main() {
   archivo.open("eje.txt");
   archivo >> dimensiones;
 
-  // revienta
   int grafo[dimensiones][100];
 
   // filas 
