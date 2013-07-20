@@ -14,7 +14,6 @@ class Punto {
     Punto(int pAdyacente, int pDistancia, int pVelocidad, float pTiempo) : adyacente(pAdyacente), distancia(pDistancia), velocidad(pVelocidad), tiempo(pTiempo) {}
     Punto(int pAdyacente, int pDistancia) : adyacente(pAdyacente), distancia(pDistancia), velocidad(0), tiempo(0.0) {}
     Punto(): adyacente(0), distancia(0), velocidad(0), tiempo(0.0) {}
-    // int actual ?
     int adyacente;
     int distancia;
     int velocidad;
@@ -29,39 +28,39 @@ struct cmp {
     }
 };
 
-//float distancia[MAX];      //distancia[ u ] distancia de vértice inicial a vértice con ID = u
-bool puntosVisitados[MAX];      //para vértices visitados
-int distancia[MAX];      //distancia[ u ] distancia de vértice inicial a vértice con ID = u
-int puntosAnterioriores[MAX];         //para la impresion de caminos
-int totalPuntos;                     //numero de vertices
-priority_queue<Punto, vector<Punto>, cmp > ColaPrioridad; //priority queue propia del c++, usamos el comparador definido para que el de menor valor este en el tope
-vector<Punto> grafo[MAX]; //lista de adyacencia
+//float listaDistancias[MAX];      //distancia[ u ] distancia de vértice inicial a vértice con ID = u
+bool listaPuntosVisitados[MAX]; // para vértices visitados
+int listaDistancias[MAX]; // listaDistancias[ u ] distancia de vértice inicial a vértice con ID = u
+int listaPtoAnterio[MAX]; // para la impresion de caminos
+int totalPuntos; // numero de puntos
+priority_queue<Punto, vector<Punto>, cmp > ColaRutas; // priority queue propia del c++, usamos el comparador definido para que el de menor valor este en el tope
+vector<Punto> grafo[MAX]; // lista de adyacencia
 
 //función de inicialización
 void init() {
     for( int i = 0 ; i <= totalPuntos; ++i ){
-        distancia[i] = INF;  //inicializamos todas las distancias con valor infinito
-        puntosVisitados[i] = false; //inicializamos todos los vértices como no visitados
-        puntosAnterioriores[i] = -1;      //inicializamos el previo del vertice i con -1
+        listaDistancias[i] = INF;  //inicializamos todas las distancias con valor infinito
+        listaPuntosVisitados[i] = false; //inicializamos todos los vértices como no visitados
+        listaPtoAnterio[i] = -1;      //inicializamos el previo del punto i con -1
     }
 }
 
 //Paso de relajacion
 //void relajacion( int actual , int adyacente , float tiempo) {
 void relajacion( int actual , int adyacente , int peso) {
-    //Si la distancia del origen al vertice actual + peso de su arista es menor a la distancia del origen al vertice adyacente
-    if( distancia[ actual ] + peso < distancia[ adyacente ] ){
-        //distancia[ adyacente ] = distancia[ actual ] + tiempo;  //relajamos el vertice actualizando la distancia
-        distancia[ adyacente ] = distancia[ actual ] + peso;  //relajamos el vertice actualizando la distancia
-        puntosAnterioriores[ adyacente ] = actual;                         //a su vez actualizamos el vertice previo
-        ColaPrioridad.push(Punto(adyacente, distancia[adyacente])); //agregamos adyacente a la cola de prioridad
+    //Si la distancia del origen al punto actual + peso de su arista es menor a la distancia del origen al punto adyacente
+    if( listaDistancias[ actual ] + peso < listaDistancias[ adyacente ] ){
+        //listaDistancias[ adyacente ] = listaDistancias[ actual ] + tiempo;  //relajamos el punto actualizando la distancia
+        listaDistancias[ adyacente ] = listaDistancias[ actual ] + peso;  //relajamos el punto actualizando la distancia
+        listaPtoAnterio[ adyacente ] = actual;                         //a su vez actualizamos el punto previo
+        ColaRutas.push(Punto(adyacente, listaDistancias[adyacente])); //agregamos adyacente a la cola de prioridad
     }
 }
 
-// Impresion del camino mas corto desde el vertice inicial y final ingresados
+// Impresion del camino mas corto desde el punto inicial y final ingresados
 void imprimirCamino(int destino) {
-    if( puntosAnterioriores[ destino ] != -1 ) {    //si aun poseo un vertice previo
-        imprimirCamino( puntosAnterioriores[ destino ] );  //recursivamente sigo explorando
+    if( listaPtoAnterio[ destino ] != -1 ) {    //si aun poseo un punto previo
+        imprimirCamino( listaPtoAnterio[ destino ] );  //recursivamente sigo explorando
     }
     cout << destino << "->";
 }
@@ -71,41 +70,46 @@ void dijkstra( int inicial ) {
     //float tiempo;
 
     init(); //inicializamos nuestros arreglos
-    ColaPrioridad.push(Punto(inicial, 0)); //Insertamos el vértice inicial en la Cola de Prioridad
-    //distancia[ inicial ] = 0.0;      //Este paso es importante, inicializamos la distancia del inicial como 0
-    distancia[ inicial ] = 0;      //Este paso es importante, inicializamos la distancia del inicial como 0
+    ColaRutas.push(Punto(inicial, 0)); //Insertamos el vértice inicial en la Cola de Prioridad
+    //listaDistancias[ inicial ] = 0.0;      //Este paso es importante, inicializamos la distancia del inicial como 0
+    listaDistancias[ inicial ] = 0;      //Este paso es importante, inicializamos la distancia del inicial como 0
 
-    while( !ColaPrioridad.empty() ){                   //Mientras cola no este vacia
-        actual = ColaPrioridad.top().adyacente;            //Obtengo de la cola el nodo con menor peso, en un comienzo será el inicial
-        ColaPrioridad.pop();                           //Sacamos el elemento de la cola
-        if (puntosVisitados[actual]) {
+    while( !ColaRutas.empty() ){                   //Mientras cola no este vacia
+        actual = ColaRutas.top().adyacente;            //Obtengo de la cola el nodo con menor peso, en un comienzo será el inicial
+        ColaRutas.pop();                           //Sacamos el elemento de la cola
+        if (listaPuntosVisitados[actual]) {
             continue; //Si el vértice actual ya fue visitado entonces sigo sacando elementos de la cola
         }
-        puntosVisitados[ actual ] = true;         //Marco como visitado el vértice actual
+        listaPuntosVisitados[ actual ] = true;         //Marco como visitado el vértice actual
 
-        for (int i = 0; i < grafo[actual].size(); ++i ){ //reviso sus adyacentes del vertice actual
-            adyacente = grafo[ actual ][ i ].adyacente;   //id del vertice adyacente
+        for (int i = 0; i < grafo[actual].size(); ++i ){ //reviso sus adyacentes del punto actual
+            adyacente = grafo[ actual ][ i ].adyacente;   //id del punto adyacente
             //tiempo = grafo[actual][i].tiempo;        //peso de la arista que une actual con adyacente ( actual , adyacente )
             peso = grafo[actual][i].distancia;        //peso de la arista que une actual con adyacente ( actual , adyacente )
-            if(!puntosVisitados[adyacente]) {        //si el vertice adyacente no fue visitado
+            if(!listaPuntosVisitados[adyacente]) {        //si el punto adyacente no fue visitado
                 relajacion(actual, adyacente, peso); //realizamos el paso de relajacion
             }
         }
     }
 
     cout << "**************Impresion de camino mas corto**************" << endl;
-    cout << "Ingrese vertice destino: " << endl;
+    cout << "Ingrese punto destino: " << endl;
     scanf("%d" , &destino );
-    cout << "Para el punto " << destino << ", la distancia mas corta es = " << distancia[destino] << endl;
+    cout << "Para el punto " << destino << ", la distancia mas corta es = " << listaDistancias[destino] << endl;
     imprimirCamino( destino );
-    cout << endl;
+    cout << ".<" << endl;
 }
 
 int main() {
-    int totalRutas , origen, destino , distancia, velocidad, inicial;
     float tiempo;
+    int destino,
+        distancia,
+        inicial,
+        origen,
+        velocidad,
+        totalRutas;
 
-    cout << "Ingrese la cantidad de puntos en ruta: ";
+    cout << "Ingrese la cantidad de puntos: ";
     scanf("%d" , &totalPuntos);
 
     cout << "Ingrese el total de rutas: ";
@@ -116,12 +120,12 @@ int main() {
         scanf("%d %d %d %d" , &origen , &destino , &distancia, &velocidad);
         //tiempo = (float)(distancia)/(float)(velocidad);
         //grafo[origen].push_back( Punto( destino , tiempo ) ); //consideremos grafo dirigido
-        grafo[origen].push_back( Punto( destino , distancia) ); //consideremos grafo dirigido
+        grafo[origen].push_back(Punto(destino, distancia)); //consideremos grafo dirigido
     }
 
-    cout << "Ingrese el vertice inicial: " << endl;
-    scanf("%d" , &inicial );
-    dijkstra( inicial );
+    cout << "Ingrese el punto inicial: " << endl;
+    scanf("%d", &inicial);
+    dijkstra(inicial);
     return 0;
 }
 
