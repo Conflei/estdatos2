@@ -1,12 +1,12 @@
-#include <iostream>
-#include <queue>
-#include <stdio.h>
-#include <vector>
+#include <iostream> // Para manejar entrada y salida
+#include <queue> // Usado la cola implementada de C
+#include <stdio.h>  // Para leer la entrada de ints
+#include <vector> // Usado para el grafo
 
 using namespace std;
 
-#define MAX 10005 //maximo numero de vértices
-#define INF 1<<30 //definimos un valor grande que represente la distancia infinita inicial, basta conque sea superior al maximo valor del distancia en alguna de las aristas
+#define MAX 10005 // Maximo numero de puntos
+#define INF 1<<30 // definimos un valor grande que represente la distancia infinita inicial, basta conque sea superior al maximo valor del distancia en alguna de las aristas
 
 // puntos en el mapa
 class Punto {
@@ -24,7 +24,7 @@ class Punto {
 //por ello es necesario realizar nuestro comparador para que sea un min-Heap
 struct cmp {
     bool operator() ( const Punto &a , const Punto &b ) {
-        return a.distancia > b.distancia;
+        return a.tiempo > b.tiempo;
     }
 };
 
@@ -38,8 +38,8 @@ vector<Punto> grafo[MAX]; // lista de adyacencia
 
 //función de inicialización
 void init() {
-    for( int i = 0 ; i <= totalPuntos; ++i ){
-        listaTiempos[i] = 5.0;
+    for (int i = 0 ; i <= totalPuntos; ++i) {
+        listaTiempos[i] = 1E+37;
         listaDistancias[i] = INF;  //inicializamos todas las distancias con valor infinito
         listaPuntosVisitados[i] = false; //inicializamos todos los vértices como no visitados
         listaPtoAnterio[i] = -1;      //inicializamos el previo del punto i con -1
@@ -51,7 +51,6 @@ void evaluarTiempo(int actual, int adyacente, int distancia, int velocidad, floa
     //Si la distancia del origen al punto actual + peso de su arista es menor a la distancia del origen al punto adyacente
     if (listaTiempos[actual] + tiempo < listaTiempos[adyacente]) {
         listaTiempos[adyacente] = listaTiempos[actual] + tiempo;  //relajamos el punto actualizando la distancia
-        cout << "listaTiempos[adyacente] "  << listaTiempos[adyacente] << endl;
         listaPtoAnterio[adyacente] = actual;                         //a su vez actualizamos el punto previo
         ColaRutas.push(Punto(adyacente, distancia, velocidad, listaTiempos[adyacente])); //agregamos adyacente a la cola de prioridad
     }
@@ -77,7 +76,7 @@ void imprimirCamino(int destino) {
 }
 
 void dijkstra(int inicial) {
-    int actual, adyacente, destino, peso, distancia, velocidad;
+    int actual, adyacente, destino, distancia, velocidad;
     float tiempo;
 
     init(); //inicializamos nuestros arreglos
