@@ -115,7 +115,10 @@ void dijkstra(int inicial) {
 
 // Cargando puntos desde un archivo.
 void cargarPuntos() {
-    int puntoActual,
+    float tiempo;
+    ifstream archivo;
+    int idArchivo,
+        puntoActual,
         puntos,
         puntoOrigen,
         puntoDestino,
@@ -124,16 +127,22 @@ void cargarPuntos() {
         i,
         j;
 
-    float tiempo;
+    cout << "Quisiera leer el archivo 1 o el 2?" << endl;
+    cin >> idArchivo;
 
-    ifstream archivo;
+    if (idArchivo == 1) {
+        archivo.open("Grafo1.txt");
+    }
 
-    archivo.open("Grafo1.txt");
+    if (idArchivo == 2) {
+        archivo.open("Grafo2.txt");
+    }
+
     archivo >> totalPuntos;
-    cout  << "- Total de Puntos:  " << totalPuntos << endl;
+    cout  << "- Total de Puntos: " << totalPuntos << endl;
 
     archivo >> totalRutas;
-    cout << "- Total de Rutas:  " << totalRutas << endl;
+    cout << "- Total de Rutas: " << totalRutas << endl;
 
     int matriz[totalRutas][COLUMNAS]; // Matriz de adyacencia temporal.
 
@@ -148,22 +157,20 @@ void cargarPuntos() {
 
     // Impriendo valores que van a ser ingresados en el grafo.
     cout << "Matriz de Adyacencia." << endl;
-    cout << "-- ~~ -- ~~ -- ~~ --" << endl;
-    cout << "Org. | Dest. | Dist. | Vel." << endl;
+    cout << "-------------------------------------------------" << endl;
+    cout << "| Origen    | Destino   | Distancia | Velocidad |" << endl;
     for (i = 0; i < totalRutas; i++) {
       for(j = 0; j < COLUMNAS; j++) {
-        if (j == 0) {
-          cout << "| ";
-        }
-
-        cout << matriz[i][j] << " | ";
+        cout << "| ";
+        cout.width(10);
+        cout << matriz[i][j];
 
         if (j == COLUMNAS-1) {
-          cout << endl;
+          cout << "|" << endl;
         }
      }
     }
-    cout << "-- ~~ -- ~~ -- ~~ --" << endl;
+    cout << "-------------------------------------------------" << endl;
 
     // Ingresando valores de archivo en el grafo.
     for (i = 0; i < totalRutas; i++) {
@@ -186,7 +193,7 @@ void calcularRuta() {
     dijkstra(inicial);
     cout << "Ingrese punto final: " << endl;
     scanf("%d" , &destino);
-    cout << "Para el punto " << destino << ", el tiempo mas corto es = " << (float)(listaTiempos[destino]) << endl;
+    cout << "Para el punto " << destino << ", el tiempo mas corto es = " << (float)listaTiempos[destino] << endl;
     cout << "Ruta: ";
     imprimirCamino(destino);
     cout << ".<" << endl;
@@ -197,13 +204,13 @@ void actualizarRuta() {
         ptOrigen,
         ptDestino;
 
-    cout << "Ingrese punto de origen: "<< endl;
+    cout << "Ingrese punto de origen: " << endl;
     scanf("%d", &ptOrigen);
 
-    cout << "Ingrese punto de destino: "<< endl;
+    cout << "Ingrese punto de destino: " << endl;
     scanf("%d", &ptDestino);
 
-    cout << "Ingrese la nueva velocidad: "<< endl;
+    cout << "Ingrese la nueva velocidad: " << endl;
     scanf("%d", &nuevaVelocidad);
 
     for (int i = 0; i < matrizAdyacencia[ptOrigen].size(); ++i) { //reviso sus adyacentes del punto actual
