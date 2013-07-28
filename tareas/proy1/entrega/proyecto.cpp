@@ -63,120 +63,116 @@ void _init() {
     }
 }
 
-// Backtracking de Dijkstra: compara si el punto encontrado es mas rapido que el
-// punto anteriormente almacenado.
+// Backtracking de Dijkstra: compara si el punto encontrado es mas rapido que
+// el punto anteriormente almacenado.
 void evaluarTiempo(int actual, int adyacente, int distancia, int velocidad, float tiempo) {
-    // Si la distancia del origen al punto actual + peso de su arista es menor a la distancia del origen al punto adyacente
-    if (listaTiempos[actual] + tiempo < listaTiempos[adyacente]) {
-        listaTiempos[adyacente] = listaTiempos[actual] + tiempo;  //relajamos el punto actualizando la distancia
-        listaPuntosAnteriores[adyacente] = actual;                         //a su vez actualizamos el punto previo
-        ColaRutas.push(Punto(adyacente, distancia, velocidad, listaTiempos[adyacente])); //agregamos adyacente a la cola de prioridad
+    if (listaTiempos[actual] + tiempo < listaTiempos[adyacente]) { // Si el tiempo acumulado del origen al punto actual mas el adyacente es menor al almacenado.
+        listaTiempos[adyacente] = listaTiempos[actual] + tiempo;  // Reemplazamos el valor almacenado.
+        listaPuntosAnteriores[adyacente] = actual; // Y tambien el punto anterior.
+        ColaRutas.push(Punto(adyacente, distancia, velocidad, listaTiempos[adyacente])); // Finalmente agregamos el punto adyacente a la cola de prioridad.
     }
 }
 
 // Funcion recursiva para la impresion del camino mas corto.
 void imprimirCamino(int destino) {
-    if (listaPuntosAnteriores[destino] != -1) {    //si aun poseo un punto previo
-        imprimirCamino(listaPuntosAnteriores[destino]);  //recursivamente sigo explorando
+    if (listaPuntosAnteriores[destino] != -1) { // Si todavia hay un punto anterior...
+        imprimirCamino(listaPuntosAnteriores[destino]);  // llamamos la funcion con el valor actual.
     }
-    cout << destino << "->";
+    cout << destino << "->"; // Si no hay puntos anteriores, imprimimos el destino.
 }
 
 void dijkstra(int inicial) {
-    int actual, adyacente, distancia, velocidad;
+    int actual,
+        adyacente,
+        distancia,
+        velocidad;
     float tiempo;
 
     _init(); //inicializamos nuestros arreglos
-    ColaRutas.push(Punto(inicial, 0, 0, 0.0)); //Insertamos el vértice inicial en la Cola de Prioridad
-    listaTiempos[inicial] = 0.0;      //Este paso es importante, inicializamos la distancia del inicial como 0
+    ColaRutas.push(Punto(inicial, 0, 0, 0.0)); // Insertamos el punto inicial en la Cola de Prioridad.
+    listaTiempos[inicial] = 0.0; // Inicializamos la distancia del inicial como 0
 
-    while (!ColaRutas.empty()) {                   //Mientras cola no este vacia
-        actual = ColaRutas.top().adyacente;            //Obtengo de la cola el nodo con menor peso, en un comienzo será el inicial
-        ColaRutas.pop();                           //Sacamos el elemento de la cola
-        if (listaPuntosVisitados[actual]){
-            continue; //Si el vértice actual ya fue visitado entonces sigo sacando elementos de la cola
+    while (!ColaRutas.empty()) { // Mientras existan elementos en la cola de rutas.
+        actual = ColaRutas.top().adyacente; // Obtenemos la ruta con menor peso, en un comienzo será el inicial
+        ColaRutas.pop(); // Sacamos el elemento de la cola.
+        if (listaPuntosVisitados[actual]) {
+            continue; // Si el punto actual ya fue visitado entonces seguimos con la proxima iteracion
         }
-        listaPuntosVisitados[ actual ] = true;         //Marco como visitado el vértice actual
+        listaPuntosVisitados[actual] = true; // Marcamos como visitado el punto actual.
 
-        for (int i = 0; i < matrizAdyacencia[actual].size(); ++i) { //reviso sus adyacentes del punto actual
-            adyacente = matrizAdyacencia[actual][i].adyacente;   //id del punto adyacente
-            distancia = matrizAdyacencia[actual][i].distancia;        //peso de la arista que une actual con adyacente ( actual , adyacente )
-            velocidad = matrizAdyacencia[actual][i].velocidad;        //peso de la arista que une actual con adyacente ( actual , adyacente )
-            tiempo = matrizAdyacencia[actual][i].tiempo;        //peso de la arista que une actual con adyacente ( actual , adyacente )
+        for (int i = 0; i < matrizAdyacencia[actual].size(); ++i) { // Revisamos los adyacentes del punto actual
+            adyacente = matrizAdyacencia[actual][i].adyacente;
+            distancia = matrizAdyacencia[actual][i].distancia;
+            velocidad = matrizAdyacencia[actual][i].velocidad;
+            tiempo = matrizAdyacencia[actual][i].tiempo;
 
-            if(!listaPuntosVisitados[adyacente]) {        //si el punto adyacente no fue visitado
-                evaluarTiempo(actual, adyacente, distancia, velocidad, tiempo); //realizamos el paso de relajacion
+            if(!listaPuntosVisitados[adyacente]) { // Si el punto adyacente no ha sido visitado
+                evaluarTiempo(actual, adyacente, distancia, velocidad, tiempo); // Hacemos el backtracking
             }
         }
     }
-
-
 }
 
-
+// Cargando puntos desde un archivo.
 void cargarPuntos() {
-    int elemento,
+    int puntoActual,
         puntos,
+        puntoOrigen,
+        puntoDestino,
+        distancia,
+        velocidad,
         i,
         j;
 
-    //Leyendo valores de archivo txt
+    float tiempo;
+
     ifstream archivo;
+
     archivo.open("Grafo1.txt");
     archivo >> totalPuntos;
     cout  << "- Total de Puntos:  " << totalPuntos << endl;
+
     archivo >> totalRutas;
     cout << "- Total de Rutas:  " << totalRutas << endl;
-    int matriz[totalRutas][COLUMNAS]; // Matriz de adyacencia
 
-    // filas
+    int matriz[totalRutas][COLUMNAS]; // Matriz de adyacencia temporal.
+
     for (i = 0; i < totalRutas; i++) {
-        // recorriendo las columnas
         for(j = 0; j < COLUMNAS; j++) {
-          archivo >> elemento;
-          matriz[i][j] = elemento;
+          archivo >> puntoActual;
+          matriz[i][j] = puntoActual;
         }
     }
+
     archivo.close();
 
-    //Impriendo valores que van a ser ingresados en el grafo
+    // Impriendo valores que van a ser ingresados en el grafo.
     cout << "Matriz de Adyacencia." << endl;
     cout << "-- ~~ -- ~~ -- ~~ --" << endl;
     cout << "Org. | Dest. | Dist. | Vel." << endl;
-    // recorriendo las filas
     for (i = 0; i < totalRutas; i++) {
-     // recorriendo las columnas
-     for(j = 0; j < COLUMNAS; j++) {
-        // barra al inicio de las filas
+      for(j = 0; j < COLUMNAS; j++) {
         if (j == 0) {
-            cout << "| ";
+          cout << "| ";
         }
 
         cout << matriz[i][j] << " | ";
 
-        // final de la linea
         if (j == COLUMNAS-1) {
-            cout << endl;
+          cout << endl;
         }
      }
     }
     cout << "-- ~~ -- ~~ -- ~~ --" << endl;
 
-    // Ingresando valores de archivo en el grafo
-    float tiempo;
-    int puntoOrigen,
-        puntoDestino,
-        distancia,
-        velocidad;
-
-    // recorriendo las filas
+    // Ingresando valores de archivo en el grafo.
     for (i = 0; i < totalRutas; i++) {
         puntoOrigen = matriz[i][0];
         puntoDestino = matriz[i][1];
         distancia = matriz[i][2];
         velocidad = matriz[i][3];
-        tiempo = (float)(distancia)/(float)(velocidad);
-        matrizAdyacencia[puntoOrigen].push_back(Punto(puntoDestino, distancia, velocidad, tiempo)); //consideremos grafo dirigido
+        tiempo = (float)(distancia) / (float)(velocidad);
+        matrizAdyacencia[puntoOrigen].push_back(Punto(puntoDestino, distancia, velocidad, tiempo)); // Agregamos el punto a la matriz.
     }
 }
 
@@ -213,11 +209,9 @@ void actualizarRuta() {
     for (int i = 0; i < matrizAdyacencia[ptOrigen].size(); ++i) { //reviso sus adyacentes del punto actual
         if(matrizAdyacencia[ptOrigen][i].adyacente == ptDestino){
             matrizAdyacencia[ptOrigen][i].velocidad = nuevaVelocidad;
-            matrizAdyacencia[ptOrigen][i].tiempo = (float)matrizAdyacencia[ptOrigen][i].distancia / nuevaVelocidad;
+            matrizAdyacencia[ptOrigen][i].tiempo = (float)matrizAdyacencia[ptOrigen][i].distancia / (float)nuevaVelocidad;
         }
     }
-
-    dijkstra(ptOrigen);
 }
 
 void menu () {
@@ -253,3 +247,4 @@ int main() {
     menu();
     return 1;
 }
+
