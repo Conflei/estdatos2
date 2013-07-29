@@ -93,21 +93,21 @@ void dijkstra(int inicial) {
     listaTiempos[inicial] = 0.0; // Inicializamos la distancia del inicial como 0
 
     while (!ColaRutas.empty()) { // Mientras existan elementos en la cola de rutas.
-        actual = ColaRutas.top().adyacente; // Obtenemos la ruta con menor peso, en un comienzo será el inicial
+        actual = ColaRutas.top().adyacente; // Obtenemos la ruta con menor peso, en un comienzo será el inicial.
         ColaRutas.pop(); // Sacamos el elemento de la cola.
         if (listaPuntosVisitados[actual]) {
-            continue; // Si el punto actual ya fue visitado entonces seguimos con la proxima iteracion
+            continue; // Si el punto actual ya fue visitado entonces seguimos con la proxima iteracion.
         }
         listaPuntosVisitados[actual] = true; // Marcamos como visitado el punto actual.
 
-        for (int i = 0; i < matrizAdyacencia[actual].size(); ++i) { // Revisamos los adyacentes del punto actual
+        for (int i = 0; i < matrizAdyacencia[actual].size(); ++i) { // Revisamos los adyacentes del punto actual.
             adyacente = matrizAdyacencia[actual][i].adyacente;
             distancia = matrizAdyacencia[actual][i].distancia;
             velocidad = matrizAdyacencia[actual][i].velocidad;
             tiempo = matrizAdyacencia[actual][i].tiempo;
 
-            if(!listaPuntosVisitados[adyacente]) { // Si el punto adyacente no ha sido visitado
-                evaluarTiempo(actual, adyacente, distancia, velocidad, tiempo); // Hacemos el backtracking
+            if(!listaPuntosVisitados[adyacente]) { // Si el punto adyacente no ha sido visitado.
+                evaluarTiempo(actual, adyacente, distancia, velocidad, tiempo); // Hacemos el backtracking.
             }
         }
     }
@@ -172,7 +172,7 @@ void cargarPuntos() {
     }
     cout << "-------------------------------------------------" << endl;
 
-    // Ingresando valores de archivo en el grafo.
+    // Ingresando valores de archivo en la Matriz de Adyacencia.
     for (i = 0; i < totalRutas; i++) {
         puntoOrigen = matriz[i][0];
         puntoDestino = matriz[i][1];
@@ -187,37 +187,53 @@ void calcularRuta() {
     int inicial,
         destino;
 
-    cout << "**************Impresion de camino mas corto**************" << endl;
+    float tiempo;
+
+    cout << "~~ Impresion de camino mas corto ~~" << endl;
     cout << "Ingrese el punto inicial: " << endl;
     scanf("%d", &inicial);
     dijkstra(inicial);
     cout << "Ingrese punto final: " << endl;
     scanf("%d" , &destino);
-    cout << "Para el punto " << destino << ", el tiempo mas corto es = " << (float)listaTiempos[destino] << endl;
-    cout << "Ruta: ";
-    imprimirCamino(destino);
-    cout << ".<" << endl;
+
+    tiempo = (float)listaTiempos[destino];
+
+    if (tiempo != 0) {
+      cout << "Para el punto " << destino << ", el tiempo mas corto es = " << tiempo << endl;
+      cout << "Ruta: ";
+      imprimirCamino(destino);
+      cout << ".<\n" << endl;
+    } else {
+      cout << "No hay paso entre " << inicial << " y " << destino << ".\n" << endl;
+    }
 }
 
 void actualizarRuta() {
     int nuevaVelocidad,
         ptOrigen,
-        ptDestino;
+        ptDestino,
+        totalAdyacentes;
 
     cout << "Ingrese punto de origen: " << endl;
     scanf("%d", &ptOrigen);
 
-    cout << "Ingrese punto de destino: " << endl;
-    scanf("%d", &ptDestino);
+    totalAdyacentes = matrizAdyacencia[ptOrigen].size();
 
-    cout << "Ingrese la nueva velocidad: " << endl;
-    scanf("%d", &nuevaVelocidad);
+    if (totalAdyacentes != 0) {
+      cout << "Ingrese punto de destino: " << endl;
+      scanf("%d", &ptDestino);
 
-    for (int i = 0; i < matrizAdyacencia[ptOrigen].size(); ++i) { //reviso sus adyacentes del punto actual
-        if(matrizAdyacencia[ptOrigen][i].adyacente == ptDestino){
-            matrizAdyacencia[ptOrigen][i].velocidad = nuevaVelocidad;
-            matrizAdyacencia[ptOrigen][i].tiempo = (float)matrizAdyacencia[ptOrigen][i].distancia / (float)nuevaVelocidad;
-        }
+      cout << "Ingrese la nueva velocidad: " << endl;
+      scanf("%d", &nuevaVelocidad);
+
+      for (int i = 0; i < totalAdyacentes; ++i) { // Revisamos todas las adyacentes desde el origen.
+          if(matrizAdyacencia[ptOrigen][i].adyacente == ptDestino) {
+              matrizAdyacencia[ptOrigen][i].velocidad = nuevaVelocidad;
+              matrizAdyacencia[ptOrigen][i].tiempo = (float)matrizAdyacencia[ptOrigen][i].distancia / (float)nuevaVelocidad;
+          }
+      }
+    } else {
+      cout << "No hay rutas que salgan de " << ptOrigen << "\n" <<endl;
     }
 }
 
