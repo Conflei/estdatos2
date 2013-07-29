@@ -170,7 +170,7 @@ void cargarPuntos() {
         }
      }
     }
-    cout << "-------------------------------------------------" << endl;
+    cout << "-------------------------------------------------\n" << endl;
 
     // Ingresando valores de archivo en la Matriz de Adyacencia.
     for (i = 0; i < totalRutas; i++) {
