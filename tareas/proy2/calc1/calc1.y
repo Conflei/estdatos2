@@ -6,7 +6,7 @@
 %}
 
 %token ENTERO
-%token SUMATORIA
+%token POTENCIA
 
 %%
 
@@ -19,10 +19,9 @@ expr:
         ENTERO
         | expr '+' expr           { $$ = $1 + $3; }
         | expr '-' expr           { $$ = $1 - $3; }
-        | expr SUMATORIA expr     { $$ = $1 + $3; }
         | expr 'por' expr         { $$ = $1 * $3; }
-        | expr 'a la' expr        { $$ = pow($1, $3); }
         | 'raiz de' expr          { $$ = sqrt($2); }
+        | expr POTENCIA expr      { $$ = pow($1, $3); }
         ;
 
 %%
